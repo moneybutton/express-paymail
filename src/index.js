@@ -10,6 +10,7 @@ import dns from 'dns'
 import fetch from 'isomorphic-fetch'
 // import urltools from 'url'
 import urljoin from 'url-join'
+import { URL } from 'url'
 
 const getBaseRoute = (config) => {
   return config.basePath || '/'

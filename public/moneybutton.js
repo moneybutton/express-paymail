@@ -1,0 +1,1 @@
+../../iframe-loader/dist/moneybutton.js

@@ -14,11 +14,13 @@ describe('.well-known file', () => {
   def('getPaymentDestination', () => null)
   def('verifyPublicKeyOwner', () => null)
   def('mainUrl', () => 'https://example.org')
+  def('requestSenderValidation', () => true)
   def('config', () => ({
     basePath: '/base-route',
     getIdentityKey: get.getIdentityKey,
     getPaymentDestination: get.getPaymentDestination,
-    verifyPublicKeyOwner: get.verifyPublicKeyOwner
+    verifyPublicKeyOwner: get.verifyPublicKeyOwner,
+    requestSenderValidation: get.requestSenderValidation
   }))
 
   beforeEach(() => {
@@ -127,6 +129,43 @@ describe('.well-known file', () => {
           .get('/.well-known/bsvalias')
 
         expect(response.body.capabilities.verifyPublicKeyOwner).to.be.undefined
+      })
+    })
+
+    describe('requestSenderValidation', () => {
+      describe('when it is false', () => {
+        def('requestSenderValidation', () => false)
+        it('returns false in c318d09ed403 capability', async () => {
+          const response = await request(app)
+            .get('/.well-known/bsvalias')
+          expect(response.body.capabilities['c318d09ed403']).to.be.false
+        })
+      })
+
+      describe('when is true', async () => {
+        def('requestSenderValidation', () => true)
+        it('returns true in c318d09ed403 capability', async () => {
+          const response = await request(app)
+            .get('/.well-known/bsvalias')
+          expect(response.body.capabilities['c318d09ed403']).to.be.true
+        })
+      })
+
+      describe('when is not present', async () => {
+        def('config', () => ({
+          basePath: '/base-route',
+          getIdentityKey: get.getIdentityKey,
+          getPaymentDestination: get.getPaymentDestination,
+          verifyPublicKeyOwner: get.verifyPublicKeyOwner
+          // requestSenderValidation: get.requestSenderValidation
+        }))
+        it('returns true in c318d09ed403 capability', async () => {
+          it('returns ', async () => {
+            const response = await request(app)
+              .get('/.well-known/bsvalias')
+            expect(response.body.capabilities['c318d09ed403']).to.be.true
+          })
+        })
       })
     })
   })

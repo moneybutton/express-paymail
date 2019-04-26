@@ -13,10 +13,12 @@ describe('users', () => {
   def('getIdentityKey', () => null)
   def('getPaymentDestination', () => null)
   def('mainUrl', () => 'https://example.org')
+  def('requestSenderValidation', () => true)
   def('config', () => ({
     basePath: '/base-route',
     getIdentityKey: get.getIdentityKey,
-    getPaymentDestination: get.getPaymentDestination
+    getPaymentDestination: get.getPaymentDestination,
+    requestSenderValidation: get.requestSenderValidation
   }))
 
   beforeEach(() => {
@@ -136,11 +138,6 @@ describe('users', () => {
 
       const neededParameters = [
         {
-          name: 'signature',
-          errorCode: 'missing-signature',
-          errorMessage: 'Missing signature'
-        },
-        {
           name: 'senderPaymail',
           errorCode: 'missing-sender-paymail',
           errorMessage: 'Missing sender paymail'
@@ -225,32 +222,131 @@ describe('users', () => {
         })
       })
 
-      describe('when the signature is invalid', async () => {
-        it('returns status bad request', async () => {
-          const body = {
-            ...get.requestBody,
-            signature: 'wrong signature'
-          }
+      describe('when requestSenderValidation is set to true', () => {
+        def('requestSenderValidation', () => true)
 
-          await request(app)
-            .post('/base-route/address/name@domain.com')
-            .send(body)
-            .expect(HttpStatus.BAD_REQUEST)
+        describe(`when the signature is missing`, async () => {
+          it('returns bad request', async () => {
+            const { signature, ...filteredBody } = get.requestBody
+            await request(app)
+              .post('/base-route/address/name@domain.com')
+              .send(filteredBody)
+              .expect(HttpStatus.BAD_REQUEST)
+          })
+
+          it('error description', async () => {
+            const { signature, ...filteredBody } = get.requestBody
+            const response = await request(app)
+              .post('/base-route/address/name@domain.com')
+              .send(filteredBody)
+
+            expect(response.body).to.be.eql({
+              code: 'missing-signature',
+              message: 'Missing signature'
+            })
+          })
         })
 
-        it('returns propper error description', async () => {
-          const body = {
-            ...get.requestBody,
-            signature: 'wrong signature'
-          }
+        describe('when the signature is invalid', async () => {
+          it('returns status bad request', async () => {
+            const body = {
+              ...get.requestBody,
+              signature: 'wrong signature'
+            }
 
-          const response = await request(app)
-            .post('/base-route/address/name@domain.com')
-            .send(body)
+            await request(app)
+              .post('/base-route/address/name@domain.com')
+              .send(body)
+              .expect(HttpStatus.BAD_REQUEST)
+          })
 
-          expect(response.body).to.be.eql({
-            code: 'bad-signature',
-            message: 'Wrong signature'
+          it('returns propper error description', async () => {
+            const body = {
+              ...get.requestBody,
+              signature: 'wrong signature'
+            }
+
+            const response = await request(app)
+              .post('/base-route/address/name@domain.com')
+              .send(body)
+
+            expect(response.body).to.be.eql({
+              code: 'bad-signature',
+              message: 'Wrong signature'
+            })
+          })
+        })
+      })
+
+      describe('when requestSenderValidation is set to false', () => {
+        def('requestSenderValidation', () => false)
+
+        describe('if the signature is missing', () => {
+          it('returns ok', async () => {
+            const { signature, ...filteredBody } = get.requestBody
+            await request(app)
+              .post('/base-route/address/name@domain.com')
+              .send(filteredBody)
+              .expect(HttpStatus.OK)
+          })
+
+          it('returns a correct output', async () => {
+            const { signature, ...filteredBody } = get.requestBody
+            const response = await request(app)
+              .post('/base-route/address/name@domain.com')
+              .send(filteredBody)
+              .expect(HttpStatus.OK)
+
+            expect(response.body).to.be.eql({
+              output: get.anOutputScript
+            })
+          })
+        })
+
+        describe('if the signature is present and is valid', () => {
+          it('returns ok', async () => {
+            await request(app)
+              .post('/base-route/address/name@domain.com')
+              .send(get.requestBody)
+              .expect(HttpStatus.OK)
+          })
+
+          it('returns a correct output', async () => {
+            const response = await request(app)
+              .post('/base-route/address/name@domain.com')
+              .send(get.requestBody)
+
+            expect(response.body).to.be.eql({
+              output: get.anOutputScript
+            })
+          })
+        })
+
+        describe('if the signature is present and is invalid', () => {
+          def('requestBody', () => ({
+            senderName: 'FirstName LastName',
+            senderPaymail: 'principal@domain.tld',
+            dt: get.aDatetime,
+            amount: 500,
+            purpose: 'human readable description',
+            signature: 'INVALID SIGNATURE'
+          }))
+
+          it('returns ok', async () => {
+            await request(app)
+              .post('/base-route/address/name@domain.com')
+              .send(get.requestBody)
+              .expect(HttpStatus.OK)
+          })
+
+          it('returns a correct output', async () => {
+            const response = await request(app)
+              .post('/base-route/address/name@domain.com')
+              .send(get.requestBody)
+
+            expect(response.body).to.be.eql({
+              output: get.anOutputScript
+            })
           })
         })
       })

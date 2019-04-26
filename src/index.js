@@ -1,16 +1,16 @@
 import express from 'express'
 import asyncHandler from 'express-async-handler'
 import bodyParser from 'body-parser'
-import { buildGetAddressRouter } from './buildGetAddressRouter'
+import { buildGetPaymentDestinationRouter } from './buildGetPaymentDestinationRouter'
 import { buildIdentityRouter } from './buildIndentityRouter'
 import { buildVerifyPubkeyRouter } from './buildVerifyPubkeyRouter'
 import { errorHandler } from './error-handler'
 import { PaymailClient } from '@moneybutton/paymail-client'
 import dns from 'dns'
 import fetch from 'isomorphic-fetch'
-// import urltools from 'url'
 import urljoin from 'url-join'
 import { URL } from 'url'
+import { CapabilityCodes } from './constants'
 
 const getBaseRoute = (config) => {
   return config.basePath || '/'
@@ -32,6 +32,35 @@ const validateBaseUrl = (url) => {
   }
 }
 
+/**
+ * @callback getIdentityKey
+ * @param {String} localPart - Local part of a paymail.
+ * @param {String} domain - Domain of a paymail.
+ * @returns {String} A string representing an identity public key for given paymail.
+ *
+ * @callback getPaymentDestination
+ * @param {String} localPart - Local part of a paymail.
+ * @param {String} domain - Domain of a paymail.
+ * @param {Object} body - Request's body already parsed and converted into a JS object.
+ * @param {Object} helpers - A bunch of handful functions to generate outputs.
+ *
+ * @callback verifyPublicKeyOwner
+ * @param {String} localPart - Local part of a paymail.
+ * @param {String} domain - Domain of a paymail.
+ * @param {String} publicKeyToCheck - Public key to check agains given paymail.
+ */
+
+/**
+ * Builds the main paymail router.
+ *
+ * @param {String} baseUrl - domain where the app is going to be placed. i.e https://moneybutton.com
+ * @param {Object} config - Object containing the configuration for paymail router.
+ * @param {getIdentityKey} config.getIdentityKey - Callback to get an identity key from an specific paymail address.
+ * @param {getPaymentDestination} config.getPaymentDestination - Callback to get a payment output to send money to the owner of an specific paymail address.
+ * @param {verifyPublicKeyOwner} config.verifyPublicKeyOwner - Callback to check if a public key belongs to a user.
+ * @param {boolean} config.requestSenderValidation - If true requester identity is required and validated always.
+ */
+
 const buildPaymailRouter = (baseUrl, config) => {
   const baseRouter = express.Router()
   baseRouter.use(bodyParser.json({ type: 'application/json' }))
@@ -40,12 +69,14 @@ const buildPaymailRouter = (baseUrl, config) => {
 
   const capabilities = {}
 
+  capabilities[CapabilityCodes.requestSenderValidation] = !!config.requestSenderValidation
+
   buildIdentityRouter(config, (router) => {
     apiRouter.use(router)
     capabilities.pki = joinUrls(baseUrl.href, getBaseRoute(config), '/id/{alias}@{domain.tld}')
   })
 
-  buildGetAddressRouter(config, (router) => {
+  buildGetPaymentDestinationRouter(config, (router) => {
     apiRouter.use(router)
     capabilities.paymentDestination = joinUrls(baseUrl.href, getBaseRoute(config), '/address/{alias}@{domain.tld}')
   })

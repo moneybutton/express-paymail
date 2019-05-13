@@ -117,7 +117,7 @@ describe('.well-known file', () => {
         const response = await request(app)
           .get('/.well-known/bsvalias')
 
-        expect(response.body.capabilities.verifyPublicKeyOwner).to.be.equals('https://example.org/base-route/verifypubkey/{alias}@{domain.tld}/{pubkey}')
+        expect(response.body.capabilities['a9f510c16bde']).to.be.equals('https://example.org/base-route/verifypubkey/{alias}@{domain.tld}/{pubkey}')
       })
     })
 
@@ -128,7 +128,7 @@ describe('.well-known file', () => {
         const response = await request(app)
           .get('/.well-known/bsvalias')
 
-        expect(response.body.capabilities.verifyPublicKeyOwner).to.be.undefined
+        expect(response.body.capabilities['a9f510c16bde']).to.be.undefined
       })
     })
 

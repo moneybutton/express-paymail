@@ -83,7 +83,7 @@ const buildPaymailRouter = (baseUrl, config) => {
 
   buildVerifyPubkeyRouter(config, (router) => {
     apiRouter.use(router)
-    capabilities.verifyPublicKeyOwner = joinUrls(baseUrl.href, getBaseRoute(config), '/verifypubkey/{alias}@{domain.tld}/{pubkey}')
+    capabilities[CapabilityCodes.verifyPublicKeyOwner] = joinUrls(baseUrl.href, getBaseRoute(config), '/verifypubkey/{alias}@{domain.tld}/{pubkey}')
   })
 
   baseRouter.get('/.well-known/bsvalias', asyncHandler(async (req, res) => {

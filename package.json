@@ -10,8 +10,7 @@
   },
   "repository": "https://github.com/moneybutton/yours",
   "author": "Yours Inc.",
-  "license": "UNLICENSED",
-  "private": true,
+  "license": "Open-BSV",
   "dependencies": {
     "@babel/runtime": "7.0.0",
     "@moneybutton/config": "^0.21.9",

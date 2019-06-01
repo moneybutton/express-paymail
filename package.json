@@ -11,6 +11,9 @@
   "repository": "https://github.com/moneybutton/yours",
   "author": "Yours Inc.",
   "license": "Open-BSV",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@babel/runtime": "7.0.0",
     "@moneybutton/config": "^0.21.10",
@@ -52,5 +55,6 @@
     "ignore": [
       "public/moneybutton.js"
     ]
-  }
+  },
+  "gitHead": "96f1d3e69bcb9fe4b07c2adecfcaa8880e5889ff"
 }

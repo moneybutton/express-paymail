@@ -135,19 +135,19 @@ describe('.well-known file', () => {
     describe('requestSenderValidation', () => {
       describe('when it is false', () => {
         def('requestSenderValidation', () => false)
-        it('returns false in c318d09ed403 capability', async () => {
+        it('returns false in 6745385c3fc0 capability', async () => {
           const response = await request(app)
             .get('/.well-known/bsvalias')
-          expect(response.body.capabilities['c318d09ed403']).to.be.false
+          expect(response.body.capabilities['6745385c3fc0']).to.be.false
         })
       })
 
       describe('when is true', async () => {
         def('requestSenderValidation', () => true)
-        it('returns true in c318d09ed403 capability', async () => {
+        it('returns true in 6745385c3fc0 capability', async () => {
           const response = await request(app)
             .get('/.well-known/bsvalias')
-          expect(response.body.capabilities['c318d09ed403']).to.be.true
+          expect(response.body.capabilities['6745385c3fc0']).to.be.true
         })
       })
 
@@ -159,11 +159,11 @@ describe('.well-known file', () => {
           verifyPublicKeyOwner: get.verifyPublicKeyOwner
           // requestSenderValidation: get.requestSenderValidation
         }))
-        it('returns true in c318d09ed403 capability', async () => {
+        it('returns true in 6745385c3fc0 capability', async () => {
           it('returns ', async () => {
             const response = await request(app)
               .get('/.well-known/bsvalias')
-            expect(response.body.capabilities['c318d09ed403']).to.be.true
+            expect(response.body.capabilities['6745385c3fc0']).to.be.true
           })
         })
       })

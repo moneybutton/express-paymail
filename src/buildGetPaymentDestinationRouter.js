@@ -8,24 +8,24 @@ import { VerifiableMessage } from '@moneybutton/paymail-client'
 const validateSignature = async (paymailClient, params) => {
   const message = VerifiableMessage.forBasicAddressResolution(
     {
-      senderPaymail: params.senderPaymail,
+      senderHandle: params.senderHandle,
       dt: params.dt,
       amount: params.amount,
       purpose: params.purpose
     }
   )
 
-  if (!await paymailClient.isValidSignature(message, params.signature, params.senderPaymail, params.pubkey)) {
+  if (!await paymailClient.isValidSignature(message, params.signature, params.senderHandle, params.pubkey)) {
     throw new PaymailError('Wrong signature', HttpStatus.BAD_REQUEST, 'bad-signature')
   }
 }
 
 const validateRequest = async (params, paymailClient, checkSignature) => {
 
-  if (!params.senderPaymail) {
+  if (!params.senderHandle) {
     throw new PaymailError('Missing sender paymail', HttpStatus.BAD_REQUEST, 'missing-sender-paymail')
   }
-  if (!/^\S+@\S+.\S+$/.test(params.senderPaymail)) {
+  if (!/^\S+@\S+.\S+$/.test(params.senderHandle)) {
     throw new PaymailError('Invalid sender paymail', HttpStatus.BAD_REQUEST, 'invalid-sender-paymail')
   }
   if (!params.dt) {

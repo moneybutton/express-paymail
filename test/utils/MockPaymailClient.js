@@ -6,7 +6,7 @@ class MockPaymailClient {
   // Real api
   isValidSignature (
     {
-      senderPaymail,
+      senderHandle,
       dt,
       amount,
       purpose

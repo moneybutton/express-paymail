@@ -55,7 +55,7 @@ describe('users', () => {
       // private key: KxWjJiTRSA7oExnvbWRaCizYB42XMKPxyD6ryzANbdXCJw1fo4sR
       def('requestBody', () => ({
         senderName: 'FirstName LastName',
-        senderPaymail: 'principal@domain.tld',
+        senderHandle: 'principal@domain.tld',
         dt: get.aDatetime,
         amount: 500,
         purpose: 'human readable description',
@@ -78,7 +78,7 @@ describe('users', () => {
         get.paymailClient.setValidSignature('H3FjXnM0KuX6y3KOcJwwWFuY+9Zftp4dgQLQII7KPYkwQrdexE9yqRaoxAuFIGep3PFdBuifJEomYkJQQQLOewI=')
         const body = {
           senderName: 'FirstName LastName 2',
-          senderPaymail: 'principal2@domain.tld',
+          senderHandle: 'principal2@domain.tld',
           dt: moment().toISOString(),
           purpose: 'human readable description 2',
           signature: 'H3FjXnM0KuX6y3KOcJwwWFuY+9Zftp4dgQLQII7KPYkwQrdexE9yqRaoxAuFIGep3PFdBuifJEomYkJQQQLOewI='
@@ -138,7 +138,7 @@ describe('users', () => {
 
       const neededParameters = [
         {
-          name: 'senderPaymail',
+          name: 'senderHandle',
           errorCode: 'missing-sender-paymail',
           errorMessage: 'Missing sender paymail'
         },
@@ -176,7 +176,7 @@ describe('users', () => {
       describe('when the sender paymail is present but is invalid', () => {
         def('requestBody', () => ({
           senderName: 'FirstName LastName',
-          senderPaymail: 'undefined',
+          senderHandle: 'undefined',
           dt: get.aDatetime,
           amount: 500,
           purpose: 'human readable description',
@@ -325,7 +325,7 @@ describe('users', () => {
         describe('if the signature is present and is invalid', () => {
           def('requestBody', () => ({
             senderName: 'FirstName LastName',
-            senderPaymail: 'principal@domain.tld',
+            senderHandle: 'principal@domain.tld',
             dt: get.aDatetime,
             amount: 500,
             purpose: 'human readable description',

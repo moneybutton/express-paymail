@@ -25,7 +25,7 @@ const validateRequest = async (params, paymailClient, checkSignature) => {
   if (!params.senderHandle) {
     throw new PaymailError('Missing sender paymail', HttpStatus.BAD_REQUEST, 'missing-sender-paymail')
   }
-  if (!/^\S+@\S+.\S+$/.test(params.senderHandle)) {
+  if (!/^\S+@\S+\.\S+$/.test(params.senderHandle)) {
     throw new PaymailError('Invalid sender paymail', HttpStatus.BAD_REQUEST, 'invalid-sender-paymail')
   }
   if (!params.dt) {

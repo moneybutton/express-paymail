@@ -202,6 +202,36 @@ describe('users', () => {
         })
       })
 
+
+      describe('when the sender paymail is present but is has an space', () => {
+        def('requestBody', () => ({
+          senderName: 'FirstName LastName',
+          senderHandle: 'someone@with space',
+          dt: get.aDatetime,
+          amount: 500,
+          purpose: 'human readable description',
+          signature: 'H35/3nzocVWb2U5dAyIsLWQEEQ3VL2EXSvSyoH4NcEh6fbIzPa79LL1Au04c1mUdeSTolsDgs8bWBljXHMSYRc8='
+        }))
+
+        it('returns bad request', async () => {
+          await request(app)
+            .post('/base-route/address/name@domain.com')
+            .send(get.requestBody)
+            .expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it('error description', async () => {
+          const response = await request(app)
+            .post('/base-route/address/name@domain.com')
+            .send(get.requestBody)
+
+          expect(response.body).to.be.eql({
+            code: 'invalid-sender-paymail',
+            message: 'Invalid sender paymail'
+          })
+        })
+      })
+
       describe('when senderName is missing', async () => {
         it('returns ok', async () => {
           const { senderName, ...filteredBody } = get.requestBody

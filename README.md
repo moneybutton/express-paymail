@@ -37,7 +37,7 @@ const paymailRouter = buildRouter(BASE_URL, {
   }
 })
 
-const app = expres()
+const app = express()
 app.user(paymailRouter)
 
 app.listen('3000', () => {

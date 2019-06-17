@@ -25,10 +25,10 @@ const validateSignature = async (paymailClient, params) => {
 const validateRequest = async (params, paymailClient, checkSignature) => {
 
   if (!params.senderHandle) {
-    throw new PaymailError('Missing sender paymail', HttpStatus.BAD_REQUEST, 'missing-sender-paymail')
+    throw new PaymailError('Missing sender handle', HttpStatus.BAD_REQUEST, 'missing-sender-handle')
   }
   if (!HANDLE_VALIDATION_REGEX.test(params.senderHandle)) {
-    throw new PaymailError('Invalid sender paymail', HttpStatus.BAD_REQUEST, 'invalid-sender-paymail')
+    throw new PaymailError('Invalid sender handle', HttpStatus.BAD_REQUEST, 'invalid-sender-handle')
   }
   if (!params.dt) {
     throw new PaymailError('Missing parameter dt', HttpStatus.BAD_REQUEST, 'missing-dt')
@@ -42,10 +42,18 @@ const validateRequest = async (params, paymailClient, checkSignature) => {
   }
 }
 
+const checkContentType = (req, res, next) => {
+  if (!req.is('application/json')) {
+    throw new PaymailError('Wrong content type. It should be `application/json`', HttpStatus.BAD_REQUEST, 'wrong-content-type')
+  }
+  next()
+}
+
 const buildGetPaymentDestinationRouter = (config, ifPresent) => {
   if (config.getPaymentDestination) {
     const router = express.Router()
-    router.post('/address/:paymail', asyncHandler(async (req, res) => {
+    router.post('/address/:paymail', checkContentType, asyncHandler(async (req, res) => {
+
       const [name, domain] = req.params.paymail.split('@')
       const validateSignature = config.requestSenderValidation
       await validateRequest(req.body, config.paymailClient, validateSignature)

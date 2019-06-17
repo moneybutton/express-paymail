@@ -136,11 +136,23 @@ describe('users', () => {
         })
       })
 
+      describe('content type header', async () => {
+        it('fails when is wrong', async () => {
+          const response = await request(app)
+            .post('/base-route/address/name@domain.com')
+            .set('content-type', 'application/x-www-form-urlencoded')
+            .send(JSON.stringify(get.requestBody))
+
+          expect(response.status).to.be.equal(HttpStatus.BAD_REQUEST)
+          expect(response.body.code).to.be.equal('wrong-content-type')
+        })
+      })
+
       const neededParameters = [
         {
           name: 'senderHandle',
-          errorCode: 'missing-sender-paymail',
-          errorMessage: 'Missing sender paymail'
+          errorCode: 'missing-sender-handle',
+          errorMessage: 'Missing sender handle'
         },
         {
           name: 'dt',
@@ -196,8 +208,8 @@ describe('users', () => {
             .send(get.requestBody)
 
           expect(response.body).to.be.eql({
-            code: 'invalid-sender-paymail',
-            message: 'Invalid sender paymail'
+            code: 'invalid-sender-handle',
+            message: 'Invalid sender handle'
           })
         })
       })
@@ -226,8 +238,8 @@ describe('users', () => {
             .send(get.requestBody)
 
           expect(response.body).to.be.eql({
-            code: 'invalid-sender-paymail',
-            message: 'Invalid sender paymail'
+            code: 'invalid-sender-handle',
+            message: 'Invalid sender handle'
           })
         })
       })

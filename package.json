@@ -1,6 +1,6 @@
 {
   "name": "@moneybutton/express-paymail",
-  "version": "0.23.0",
+  "version": "0.23.1",
   "description": "Paymail Express implementation",
   "main": "lib/index.js",
   "scripts": {

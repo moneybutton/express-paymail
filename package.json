@@ -15,7 +15,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@babel/runtime": "7.0.0",
     "@moneybutton/config": "^0.23.0",
     "@moneybutton/paymail-client": "^0.23.0",
     "body-parser": "1.18.3",
@@ -29,11 +28,12 @@
     "url-join": "4.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "7.0.0",
-    "@babel/core": "7.0.0",
-    "@babel/plugin-transform-runtime": "7.0.0",
-    "@babel/preset-env": "7.0.0",
-    "@babel/register": "7.0.0",
+    "@babel/cli": "7.5.5",
+    "@babel/core": "7.5.5",
+    "@babel/plugin-transform-runtime": "7.5.5",
+    "@babel/preset-env": "7.5.5",
+    "@babel/register": "7.5.5",
+    "@babel/runtime": "7.5.5",
     "babel-eslint": "9.0.0",
     "bdd-lazy-var": "2.5.1",
     "component-emitter": "1.2.1",

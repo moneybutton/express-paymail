@@ -18,7 +18,7 @@
     "@moneybutton/config": "^0.24.0",
     "@moneybutton/paymail-client": "^0.24.0",
     "body-parser": "1.18.3",
-    "bsv": "0.29.1",
+    "bsv": "0.29.2",
     "concurrently": "3.5.1",
     "express": "4.17.1",
     "express-async-handler": "1.1.3",

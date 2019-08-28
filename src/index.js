@@ -4,6 +4,7 @@ import bodyParser from 'body-parser'
 import { buildGetPaymentDestinationRouter } from './buildGetPaymentDestinationRouter'
 import { buildIdentityRouter } from './buildIndentityRouter'
 import { buildVerifyPubkeyRouter } from './buildVerifyPubkeyRouter'
+import { buildPublicProfileRouter } from './buildPublicProfileRouter'
 import { errorHandler } from './error-handler'
 import { PaymailClient } from '@moneybutton/paymail-client'
 import dns from 'dns'
@@ -84,6 +85,12 @@ const buildPaymailRouter = (baseUrl, config) => {
   buildVerifyPubkeyRouter(config, (router) => {
     apiRouter.use(router)
     capabilities[CapabilityCodes.verifyPublicKeyOwner] = joinUrls(baseUrl.href, getBaseRoute(config), '/verifypubkey/{alias}@{domain.tld}/{pubkey}')
+  })
+
+  buildPublicProfileRouter(config, (router) => {
+    console.warn('This feature is in alpha state. Paymail profile protocol is still being discussed.')
+    apiRouter.use(router)
+    capabilities[CapabilityCodes.publicProfile] = joinUrls(baseUrl.href, getBaseRoute(config), '/public-profile/{alias}@{domain.tld}')
   })
 
   baseRouter.get('/.well-known/bsvalias', asyncHandler(async (req, res) => {

@@ -38,7 +38,7 @@ const paymailRouter = buildRouter(BASE_URL, {
 })
 
 const app = expres()
-app.user(paymailRouter)
+app.use(paymailRouter)
 
 app.listen('3000', () => {
   logger.info(`Listening on port ${API_REST_PORT}.`)

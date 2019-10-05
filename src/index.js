@@ -1,6 +1,7 @@
 import express from 'express'
 import asyncHandler from 'express-async-handler'
 import bodyParser from 'body-parser'
+import cors from 'cors'
 import { buildGetPaymentDestinationRouter } from './buildGetPaymentDestinationRouter'
 import { buildIdentityRouter } from './buildIndentityRouter'
 import { buildVerifyPubkeyRouter } from './buildVerifyPubkeyRouter'
@@ -68,6 +69,10 @@ const buildPaymailRouter = (baseUrl, config) => {
   const apiRouter = express.Router()
   baseUrl = validateBaseUrl(baseUrl)
 
+  if(config.useCors) {
+    baseRouter.use(cors(config.corsConfig || {}))
+  }
+
   const capabilities = {}
 
   capabilities[CapabilityCodes.requestSenderValidation] = !!config.requestSenderValidation
@@ -112,6 +117,8 @@ const buildRouter = (baseDomain, config) => {
   return buildPaymailRouter(baseDomain,
     {
       paymailClient: new PaymailClient(dns, fetch),
+      useCors: true,
+      corsConfig: {},
       ...config
     }
   )

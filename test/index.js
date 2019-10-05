@@ -33,6 +33,67 @@ describe('.well-known file', () => {
     app.use(paymailRouter)
   })
 
+  describe('cors', () => {
+    describe('default', () => {
+      it('returns no content status', async () => {
+        await request(app)
+          .options('/.well-known/bsvalias')
+          .expect(HttpStatus.NO_CONTENT)
+      })
+
+      it('returns right headers', async () => {
+        await request(app)
+          .options('/.well-known/bsvalias')
+          .expect(res => {
+            expect(res.headers['access-control-allow-origin']).to.be.eql('*')
+            expect(res.headers['access-control-allow-methods']).to.be.eql('GET,HEAD,PUT,PATCH,POST,DELETE')
+          })
+      })
+    })
+
+    describe('not cors', () => {
+      def('config', () => ({
+        useCors: false
+      }))
+
+      it('returns no content status', async () => {
+        await request(app)
+          .options('/.well-known/bsvalias')
+          .expect(res => {
+            const headers = Object.keys(res.headers)
+            expect(headers).not.to.contain('access-control-allow-origin')
+            expect(headers).not.to.contain('access-control-allow-methods')
+          })
+      })
+    })
+
+    describe('custom cors config', () => {
+      def('config', () => ({
+        useCors: true,
+        corsConfig: {
+          methods: 'GET',
+          origin: 'someorigin.com',
+          optionsSuccessStatus: 200
+        }
+      }))
+
+      it('returns the configured status', async () => {
+        await request(app)
+          .options('/.well-known/bsvalias')
+          .expect(HttpStatus.OK)
+      })
+
+      it('returns right headers', async () => {
+        await request(app)
+          .options('/.well-known/bsvalias')
+          .expect(res => {
+            expect(res.headers['access-control-allow-origin']).to.be.eql('someorigin.com')
+            expect(res.headers['access-control-allow-methods']).to.be.eql('GET')
+          })
+      })
+    })
+  })
+
   describe('mainUrl parameter', () => {
     it('fails if the base url is not valid', () => {
       const baseUrl = 'someInvalidUrl'

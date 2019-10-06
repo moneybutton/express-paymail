@@ -214,7 +214,6 @@ describe('users', () => {
         })
       })
 
-
       describe('when the sender paymail is present but is has an space', () => {
         def('requestBody', () => ({
           senderName: 'FirstName LastName',

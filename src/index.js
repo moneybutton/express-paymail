@@ -13,6 +13,7 @@ import fetch from 'isomorphic-fetch'
 import urljoin from 'url-join'
 import { URL } from 'url'
 import { CapabilityCodes } from './constants'
+import { buildReceiveTransactionRouter } from './buildReceiveTransactionRouter'
 
 const getBaseRoute = (config) => {
   return config.basePath || '/'
@@ -69,7 +70,7 @@ const buildPaymailRouter = (baseUrl, config) => {
   const apiRouter = express.Router()
   baseUrl = validateBaseUrl(baseUrl)
 
-  if(config.useCors) {
+  if (config.useCors) {
     baseRouter.use(cors(config.corsConfig || {}))
   }
 
@@ -94,6 +95,12 @@ const buildPaymailRouter = (baseUrl, config) => {
 
   buildPublicProfileRouter(config, (router) => {
     console.warn('This feature is in alpha state. Paymail profile protocol is still being discussed.')
+    apiRouter.use(router)
+    capabilities[CapabilityCodes.publicProfile] = joinUrls(baseUrl.href, getBaseRoute(config), '/public-profile/{alias}@{domain.tld}')
+  })
+
+  buildReceiveTransactionRouter(config, (router) => {
+    // console.warn('This feature is in alpha state. Paymail profile protocol is still being discussed.')
     apiRouter.use(router)
     capabilities[CapabilityCodes.publicProfile] = joinUrls(baseUrl.href, getBaseRoute(config), '/public-profile/{alias}@{domain.tld}')
   })

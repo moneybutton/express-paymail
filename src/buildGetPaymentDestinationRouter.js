@@ -5,7 +5,7 @@ import HttpStatus from 'http-status-codes'
 import * as helpers from './script-helpers'
 import { VerifiableMessage } from '@moneybutton/paymail-client'
 
-const HANDLE_VALIDATION_REGEX = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+const HANDLE_VALIDATION_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
 
 const validateSignature = async (paymailClient, params) => {
   const message = VerifiableMessage.forBasicAddressResolution(
@@ -23,7 +23,6 @@ const validateSignature = async (paymailClient, params) => {
 }
 
 const validateRequest = async (params, paymailClient, checkSignature) => {
-
   if (!params.senderHandle) {
     throw new PaymailError('Missing sender handle', HttpStatus.BAD_REQUEST, 'missing-sender-handle')
   }
@@ -53,7 +52,6 @@ const buildGetPaymentDestinationRouter = (config, ifPresent) => {
   if (config.getPaymentDestination) {
     const router = express.Router()
     router.post('/address/:paymail', checkContentType, asyncHandler(async (req, res) => {
-
       const [name, domain] = req.params.paymail.split('@')
       const validateSignature = config.requestSenderValidation
       await validateRequest(req.body, config.paymailClient, validateSignature)

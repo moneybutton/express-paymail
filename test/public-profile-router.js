@@ -32,7 +32,6 @@ describe('publicProfileRouter', () => {
   })
 
   describe('/base-route/public-profile/:paymail', async () => {
-
     describe('when the callback is defined', () => {
       def('publicProfile', () => {
         return () => ({

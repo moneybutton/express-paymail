@@ -102,7 +102,7 @@ const buildPaymailRouter = (baseUrl, config) => {
   buildReceiveTransactionRouter(config, (router) => {
     // console.warn('This feature is in alpha state. Paymail profile protocol is still being discussed.')
     apiRouter.use(router)
-    capabilities[CapabilityCodes.publicProfile] = joinUrls(baseUrl.href, getBaseRoute(config), '/public-profile/{alias}@{domain.tld}')
+    capabilities[CapabilityCodes.receiveTransaction] = joinUrls(baseUrl.href, getBaseRoute(config), '/receive-transaction/{alias}@{domain.tld}')
   })
 
   baseRouter.get('/.well-known/bsvalias', asyncHandler(async (req, res) => {

@@ -45,7 +45,7 @@ describe('receive transaction router', () => {
         receiveTransaction: get.receiveTransaction
       }))
 
-      def('receiveTransaction', () => (_data, handlers) => {
+      def('receiveTransaction', () => (_local, _domain, _data, handlers) => {
         handlers.ok()
       })
 
@@ -62,7 +62,11 @@ describe('receive transaction router', () => {
       describe('callback parameters', () => {
         let data = null
         let handlers = null
-        def('receiveTransaction', () => (receivedData, receivedHandlers) => {
+        let localPart = null
+        let domain = null
+        def('receiveTransaction', () => (receivedLocalPart, receivedDomain, receivedData, receivedHandlers) => {
+          localPart = receivedLocalPart
+          domain = receivedDomain
           data = receivedData
           handlers = receivedHandlers
           receivedHandlers.ok()
@@ -93,6 +97,8 @@ describe('receive transaction router', () => {
             'notFound',
             'unexpectedError'
           ])
+          expect(localPart).to.be.eql('name')
+          expect(domain).to.be.eql('domain.com')
         })
       })
 
@@ -167,7 +173,7 @@ describe('receive transaction router', () => {
       })
 
       describe('and it calls notFound handler', () => {
-        def('receiveTransaction', () => (_data, handlers) => {
+        def('receiveTransaction', () => (_local, _domain, _data, handlers) => {
           return handlers.notFound()
         })
 
@@ -196,7 +202,7 @@ describe('receive transaction router', () => {
       })
 
       describe('when the callback calls the paymentError handler', () => {
-        def('receiveTransaction', () => (_data, callbacks) => {
+        def('receiveTransaction', () => (_local, _domain, _data, callbacks) => {
           callbacks.paymentError('some error message')
         })
 
@@ -254,7 +260,7 @@ describe('receive transaction router', () => {
       })
 
       describe('when the callback calls the unexpectedError handler', () => {
-        def('receiveTransaction', () => (_data, callbacks) => {
+        def('receiveTransaction', () => (_local, _domain, _data, callbacks) => {
           callbacks.unexpectedError('some error message')
         })
 

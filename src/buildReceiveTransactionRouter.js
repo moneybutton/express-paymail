@@ -46,7 +46,8 @@ const buildReceiveTransactionRouter = (config, ifPresent) => {
         if (!metadata) {
           throw new PaymailError('metadata is missing', HttpStatus.BAD_REQUEST)
         }
-        await config.receiveTransaction({ transactions, metadata, reference }, buildResponseHandlers(req, res))
+        const [localPart, domain] = req.params.paymail.split('@')
+        await config.receiveTransaction(localPart, domain, { transactions, metadata, reference }, buildResponseHandlers(req, res))
       }))
 
     ifPresent(router)

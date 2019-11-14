@@ -33,6 +33,44 @@ describe('.well-known file', () => {
     app.use(paymailRouter)
   })
 
+  describe('errorHandler', () => {
+    def('getIdentityKey', () => async () => { throw new Error('Ooops!') })
+
+    describe('default', () => {
+      def('config', () => ({
+        basePath: '/base-route',
+        getIdentityKey: get.getIdentityKey,
+      }))
+
+      it('returns default error', async () => {
+        const response = await request(app)
+          .get('/base-route/id/name@domain.com')
+
+        expect(response.body).to.be.eql({
+          code: 'internal-server-error',
+          message: 'Something went wrong. Please try again later'
+        })
+      })
+    })
+
+    describe('custom eror handler', () => {
+      def('config', () => ({
+        basePath: '/base-route',
+        getIdentityKey: get.getIdentityKey,
+        errorHandler: (err, req, res, next) => {
+          res.send({message: err.message})
+        }
+      }))
+
+      it('returns custom error', async () => {
+        const response = await request(app)
+          .get('/base-route/id/name@domain.com')
+
+        expect(response.body).to.be.eql({message: 'Ooops!'})
+      })
+    })
+  })
+
   describe('cors', () => {
     describe('default', () => {
       it('returns no content status', async () => {

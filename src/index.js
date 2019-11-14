@@ -14,6 +14,7 @@ import urljoin from 'url-join'
 import { URL } from 'url'
 import { CapabilityCodes } from './constants'
 import { buildReceiveTransactionRouter } from './buildReceiveTransactionRouter'
+import { PaymailError } from './errors/PaymailError'
 
 const getBaseRoute = (config) => {
   return config.basePath || '/'
@@ -62,6 +63,7 @@ const validateBaseUrl = (url) => {
  * @param {getPaymentDestination} config.getPaymentDestination - Callback to get a payment output to send money to the owner of an specific paymail address.
  * @param {verifyPublicKeyOwner} config.verifyPublicKeyOwner - Callback to check if a public key belongs to a user.
  * @param {boolean} config.requestSenderValidation - If true requester identity is required and validated always.
+ * @param {function} config.errorHandler - Express middleware to handle errors in custom way.
  */
 
 const buildPaymailRouter = (baseUrl, config) => {
@@ -115,7 +117,7 @@ const buildPaymailRouter = (baseUrl, config) => {
 
   baseRouter.use(getBaseRoute(config), apiRouter)
 
-  baseRouter.use(errorHandler)
+  baseRouter.use(config.errorHandler)
 
   return baseRouter
 }
@@ -126,9 +128,10 @@ const buildRouter = (baseDomain, config) => {
       paymailClient: new PaymailClient(dns, fetch),
       useCors: true,
       corsConfig: {},
+      errorHandler: errorHandler,
       ...config
     }
   )
 }
 
-export { buildRouter }
+export { buildRouter, PaymailError }

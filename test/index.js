@@ -39,7 +39,7 @@ describe('.well-known file', () => {
     describe('default', () => {
       def('config', () => ({
         basePath: '/base-route',
-        getIdentityKey: get.getIdentityKey,
+        getIdentityKey: get.getIdentityKey
       }))
 
       it('returns default error', async () => {
@@ -58,7 +58,7 @@ describe('.well-known file', () => {
         basePath: '/base-route',
         getIdentityKey: get.getIdentityKey,
         errorHandler: (err, req, res, next) => {
-          res.send({message: err.message})
+          res.send({ message: err.message })
         }
       }))
 
@@ -66,7 +66,7 @@ describe('.well-known file', () => {
         const response = await request(app)
           .get('/base-route/id/name@domain.com')
 
-        expect(response.body).to.be.eql({message: 'Ooops!'})
+        expect(response.body).to.be.eql({ message: 'Ooops!' })
       })
     })
   })

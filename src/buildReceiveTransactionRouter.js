@@ -14,23 +14,6 @@ const validateTransactions = (transactions) => {
   }
 }
 
-const buildResponseHandlers = (req, res) => {
-  return {
-    ok: (txid, message = 'success') => {
-      res.send({ txid, message })
-    },
-    paymentError: (message) => {
-      throw new PaymailError(message, HttpStatus.UNPROCESSABLE_ENTITY, 'tx-error')
-    },
-    notFound: () => {
-      throw new PaymailError(`Paymail not found: ${req.params.paymail}`, HttpStatus.NOT_FOUND, 'not-found')
-    },
-    unexpectedError: (message = 'unexpected error') => {
-      throw new Error(message)
-    }
-  }
-}
-
 const buildReceiveTransactionRouter = (config, ifPresent) => {
   if (config.receiveTransaction) {
     const router = express.Router()
@@ -47,7 +30,13 @@ const buildReceiveTransactionRouter = (config, ifPresent) => {
           throw new PaymailError('metadata is missing', HttpStatus.BAD_REQUEST)
         }
         const [localPart, domain] = req.params.paymail.split('@')
-        await config.receiveTransaction(localPart, domain, { transactions, metadata, reference }, buildResponseHandlers(req, res))
+        const txids = await config.receiveTransaction(localPart, domain, { transactions, metadata, reference })
+
+        if (txids === null) {
+          throw new PaymailError('Paymail not found.', HttpStatus.NOT_FOUND, 'not-found')
+        }
+
+        res.send(txids)
       }))
 
     ifPresent(router)

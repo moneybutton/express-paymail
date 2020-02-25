@@ -46,16 +46,13 @@ describe('receive transaction router', () => {
       }))
 
       def('receiveTransaction', () => (_local, _domain, _data) => {
-        return ['sometxid']
+        return 'sometxid'
       })
 
       it('returns http status ok', async () => {
         await request(app)
           .post('/base-route/receive-transaction/name@domain.com')
-          .send({
-            transactions: [{ hex: 'sometxencodedtx' }],
-            metadata: {}
-          })
+          .send({ hex: 'sometxencodedtx', metadata: {} })
           .expect(HttpStatus.OK)
       })
 
@@ -63,44 +60,41 @@ describe('receive transaction router', () => {
         const response = await request(app)
           .post('/base-route/receive-transaction/name@domain.com')
           .send({
-            transactions: [],
+            hex: 'somehex',
             metadata: {}
           })
-        expect(response.body).to.be.eql(['sometxid'])
+        expect(response.body).to.be.eql({ txid: 'sometxid', message: 'ok' })
       })
 
       describe('callback parameters', () => {
-        let data = null
         let localPart = null
         let domain = null
-        def('receiveTransaction', () => (receivedLocalPart, receivedDomain, receivedData) => {
+        let hexTx = null
+        let metadata = null
+        def('receiveTransaction', () => (receivedLocalPart, receivedDomain, receivedHexTx, receivedMetadata) => {
           localPart = receivedLocalPart
           domain = receivedDomain
-          data = receivedData
-          return ['sometxid']
+          hexTx = receivedHexTx
+          metadata = receivedMetadata
+          return 'sometxid'
         })
 
         it('receives the right parameters', async () => {
-          const transactions = [{ hex: 'hexencodedtx' }]
-          const metadata = {
+          const transaction = 'hexencodedtx'
+          const extraData = {
             data1: 'hello',
             data2: 'bye'
           }
-          const reference = 'somereference'
           await request(app)
             .post('/base-route/receive-transaction/name@domain.com')
             .send({
-              transactions,
-              metadata,
-              reference
+              hex: transaction,
+              metadata: extraData
             })
-          expect(data).to.be.eql({
-            transactions,
-            metadata,
-            reference
-          })
           expect(localPart).to.be.eql('name')
           expect(domain).to.be.eql('domain.com')
+          expect(hexTx).to.be.eql(transaction)
+          expect(metadata).to.be.eql(extraData)
         })
       })
 
@@ -108,9 +102,8 @@ describe('receive transaction router', () => {
         await request(app)
           .post('/base-route/receive-transaction/name@domain.com')
           .send({
-            transactions: undefined,
-            metadata: {},
-            reference: 'someid'
+            hex: undefined,
+            metadata: {}
           })
           .expect(HttpStatus.BAD_REQUEST)
       })
@@ -119,57 +112,8 @@ describe('receive transaction router', () => {
         await request(app)
           .post('/base-route/receive-transaction/name@domain.com')
           .send({
-            transactions: [],
-            metadata: undefined,
-            reference: 'someid'
-          })
-          .expect(HttpStatus.BAD_REQUEST)
-      })
-
-      it('returns OK when refference is missing', async () => {
-        await request(app)
-          .post('/base-route/receive-transaction/name@domain.com')
-          .send({
-            transactions: [],
-            metadata: {},
-            reference: undefined
-          })
-          .expect(HttpStatus.OK)
-      })
-
-      it('returns BAD_REQUEST if any transaction object does not have hex attribute', async () => {
-        await request(app)
-          .post('/base-route/receive-transaction/name@domain.com')
-          .send({
-            transactions: [
-              {
-                hex: '0200000001831db7cbb5d97f2e97d2017fe6167b00099d33639d00c7993'
-              },
-              {
-                rawtx: '1483e994e708e4709696b82b5b7f2525a329ed5fa888ac00000000'
-              }
-            ],
-            metadata: {},
-            reference: 'someid'
-          })
-          .expect(HttpStatus.BAD_REQUEST)
-      })
-
-      it('returns BAD_REQUEST if any transaction object does has extra attributes', async () => {
-        await request(app)
-          .post('/base-route/receive-transaction/name@domain.com')
-          .send({
-            transactions: [
-              {
-                hex: '0200000001831db7cbb5d97f2e97d2017fe6167b00099d33639d00c7993'
-              },
-              {
-                hex: '1483e994e708e4709696b82b5b7f2525a329ed5fa888ac00000000',
-                extra: 'something'
-              }
-            ],
-            metadata: {},
-            reference: 'someid'
+            hex: 'asdasds',
+            metadata: undefined
           })
           .expect(HttpStatus.BAD_REQUEST)
       })
@@ -183,7 +127,7 @@ describe('receive transaction router', () => {
           await request(app)
             .post('/base-route/receive-transaction/name@domain.com')
             .send({
-              transactions: [],
+              hex: 'asdads',
               metadata: {}
             })
             .expect(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -193,7 +137,7 @@ describe('receive transaction router', () => {
           const response = await request(app)
             .post('/base-route/receive-transaction/name@domain.com')
             .send({
-              transactions: [],
+              hex: 'asdasd',
               metadata: {}
             })
           expect(response.body).to.be.eql({
@@ -212,7 +156,7 @@ describe('receive transaction router', () => {
           await request(app)
             .post('/base-route/receive-transaction/name@domain.com')
             .send({
-              transactions: [{ hex: 'somerawtx' }],
+              hex: 'somerawtx',
               metadata: {}
             })
             .expect(HttpStatus.NOT_FOUND)
@@ -222,7 +166,7 @@ describe('receive transaction router', () => {
           const response = await request(app)
             .post('/base-route/receive-transaction/name@domain.com')
             .send({
-              transactions: [{ hex: 'somwrawtx' }],
+              hex: 'somwrawtx',
               metadata: {}
             })
           expect(response.body).to.be.eql({

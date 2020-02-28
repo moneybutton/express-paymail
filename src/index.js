@@ -6,6 +6,7 @@ import { buildGetPaymentDestinationRouter } from './buildGetPaymentDestinationRo
 import { buildIdentityRouter } from './buildIndentityRouter'
 import { buildVerifyPubkeyRouter } from './buildVerifyPubkeyRouter'
 import { buildPublicProfileRouter } from './buildPublicProfileRouter'
+import { buildP2pPaymentDestinationRouter } from './buildP2pPaymentDestinationRouter'
 import { errorHandler } from './error-handler'
 import { PaymailClient } from '@moneybutton/paymail-client'
 import dns from 'dns'
@@ -105,6 +106,11 @@ const buildPaymailRouter = (baseUrl, config) => {
     // console.warn('This feature is in alpha state. Paymail profile protocol is still being discussed.')
     apiRouter.use(router)
     capabilities[CapabilityCodes.receiveTransaction] = joinUrls(baseUrl.href, getBaseRoute(config), '/receive-transaction/{alias}@{domain.tld}')
+  })
+
+  buildP2pPaymentDestinationRouter(config, (router) => {
+    apiRouter.use(router)
+    capabilities[CapabilityCodes.p2pPaymentDestination] = joinUrls(baseUrl.href, getBaseRoute(config), '/p2p-payment-destination/{alias}@{domain.tld}')
   })
 
   baseRouter.get('/.well-known/bsvalias', asyncHandler(async (req, res) => {

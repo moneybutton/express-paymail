@@ -53,7 +53,8 @@ describe('users', () => {
             output: 'other address',
             satoshis: 3000
           }
-        ]
+        ],
+        reference: 'someref'
       }))
 
       def('getP2pPaymentDestination', () => (name, domain, satoshis) => {
@@ -78,19 +79,41 @@ describe('users', () => {
           .post('/base-route/p2p-payment-destination/name@domain.com')
           .send(get.requestBody)
 
-        expect(response.body).to.be.eql({
-          outputs: get.aPaymentDestination
-        })
+        expect(response.body).to.be.eql(get.aPaymentDestination)
       })
 
       describe('when the handler returns null', () => {
         def('getP2pPaymentDestination', () => () => null)
         it('returns the output script', async () => {
           const response = await request(app)
-            .post('/base-route/address/name@domain.com')
+            .post('/base-route/p2p-payment-destination/name@domain.com')
             .send(get.requestBody)
 
           expect(response.status).to.be.equal(HttpStatus.NOT_FOUND)
+        })
+      })
+
+      describe('when the handler returns no reference', () => {
+        def('getP2pPaymentDestination', () => () => ({
+          outputs: [
+            {
+              output: 'some address',
+              satoshis: 1000
+            },
+            {
+              output: 'other address',
+              satoshis: 3000
+            }
+          ]
+          // reference: 'someref'
+        }))
+
+        it('returns error status', async () => {
+          const response = await request(app)
+            .post('/base-route/p2p-payment-destination/name@domain.com')
+            .send(get.requestBody)
+
+          expect(response.status).to.be.equal(HttpStatus.INTERNAL_SERVER_ERROR)
         })
       })
 

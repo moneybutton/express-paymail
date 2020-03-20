@@ -71,11 +71,13 @@ describe('receive transaction router', () => {
         let domain = null
         let hexTx = null
         let metadata = null
-        def('receiveTransaction', () => (receivedLocalPart, receivedDomain, receivedHexTx, receivedMetadata) => {
+        let reference = null
+        def('receiveTransaction', () => (receivedLocalPart, receivedDomain, receivedHexTx, receivedReference, receivedMetadata) => {
           localPart = receivedLocalPart
           domain = receivedDomain
           hexTx = receivedHexTx
           metadata = receivedMetadata
+          reference = receivedReference
           return 'sometxid'
         })
 
@@ -89,12 +91,14 @@ describe('receive transaction router', () => {
             .post('/base-route/receive-transaction/name@domain.com')
             .send({
               hex: transaction,
-              metadata: extraData
+              metadata: extraData,
+              reference: 'someRef'
             })
           expect(localPart).to.be.eql('name')
           expect(domain).to.be.eql('domain.com')
           expect(hexTx).to.be.eql(transaction)
           expect(metadata).to.be.eql(extraData)
+          expect(reference).to.be.eql('someRef')
         })
       })
 

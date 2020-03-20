@@ -8,7 +8,7 @@ const buildReceiveTransactionRouter = (config, ifPresent) => {
     const router = express.Router()
     router.post('/receive-transaction/:paymail',
       asyncHandler(async (req, res) => {
-        const { hex, metadata } = req.body
+        const { hex, reference, metadata } = req.body
         if (!hex) {
           throw new PaymailError('transaction hex missing', HttpStatus.BAD_REQUEST)
         }
@@ -18,7 +18,7 @@ const buildReceiveTransactionRouter = (config, ifPresent) => {
         }
 
         const [localPart, domain] = req.params.paymail.split('@')
-        const txid = await config.receiveTransaction(localPart, domain, hex, metadata)
+        const txid = await config.receiveTransaction(localPart, domain, hex, reference, metadata)
 
         if (txid === null) {
           throw new PaymailError('Paymail not found.', HttpStatus.NOT_FOUND, 'not-found')

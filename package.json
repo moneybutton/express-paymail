@@ -1,6 +1,6 @@
 {
   "name": "@moneybutton/express-paymail",
-  "version": "0.38.1",
+  "version": "0.38.2",
   "description": "Paymail Express implementation",
   "main": "lib/index.js",
   "scripts": {
@@ -16,8 +16,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@moneybutton/config": "^0.38.1",
-    "@moneybutton/paymail-client": "^0.38.1",
+    "@moneybutton/config": "^0.38.2",
+    "@moneybutton/paymail-client": "^0.38.2",
     "body-parser": "1.18.3",
     "bsv": "1.5.0",
     "cors": "2.8.5",

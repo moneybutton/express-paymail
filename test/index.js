@@ -268,4 +268,41 @@ describe('.well-known file', () => {
       })
     })
   })
+
+  describe('validateBaseUrl', () => {
+    let consoleOutput = []
+    const mockedWarn = output => consoleOutput.push(output)
+    const originalWarn = console.warn
+    beforeEach(() => (console.warn = mockedWarn))
+    afterEach(() => (console.warn = originalWarn))
+
+    it('log console warning if ssl is not enabled in production', () => {
+      const baseUrl = 'http://example.com'
+      buildRouter(baseUrl, {
+        ...get.config,
+        paymailClient: get.paymailClient
+      })
+      expect(consoleOutput).to.eql(['Paymail should always use ssl on production'])
+    })
+
+    it('do not log console warning if ssl is enabled in production', () => {
+      consoleOutput = []
+      const baseUrl = 'https://example.com'
+      buildRouter(baseUrl, {
+        ...get.config,
+        paymailClient: get.paymailClient
+      })
+      expect(consoleOutput).to.eql([])
+    })
+
+    it('do not log console warning about ssl in localhost development', () => {
+      consoleOutput = []
+      const baseUrl = 'http://localhost:3000'
+      buildRouter(baseUrl, {
+        ...get.config,
+        paymailClient: get.paymailClient
+      })
+      expect(consoleOutput).to.eql([])
+    })
+  })
 })

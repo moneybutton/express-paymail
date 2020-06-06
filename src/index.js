@@ -28,7 +28,7 @@ const joinUrls = (...parts) => {
 const validateBaseUrl = (url) => {
   try {
     url = new URL(url)
-    if (url.protocol !== 'https:' && /^locahost:?\d*$/.test(url.hostname)) {
+    if (url.protocol !== 'https:' && !/^localhost:?\d*$/.test(url.hostname)) {
       console.warn('Paymail should always use ssl on production')
     }
     return url

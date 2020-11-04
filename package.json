@@ -6,6 +6,7 @@
   "scripts": {
     "build": "babel --copy-files src -d lib",
     "test": "mocha",
+    "test:ci": "mocha",
     "lint": "standard --parser=babel-eslint",
     "dev": "nodemon -w package.json -w src/ -x yarn build"
   },

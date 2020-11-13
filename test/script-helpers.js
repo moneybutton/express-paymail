@@ -13,11 +13,11 @@ describe('script helpers', () => {
     })
   })
 
-  describe('p2pkhFromPublicKey', () => {
+  describe('p2pkhFromPubKey', () => {
     // Private key: L1j8ZEvpxWMDQ3zYih4MgxABfvEvjoPYEM4THLEBUUr35tNKyVhP
     def('pubkey', () => '03908e94c48ababa9161897af2d8a6cf54ad82def436a7734b1da4d48e5fe99521')
     it('creates the right script', () => {
-      const result = helpers.p2pkhFromPublicKey(get.pubkey)
+      const result = helpers.p2pkhFromPubKey(get.pubkey)
       expect(result).to.be.equal('76a914b002d0497100a7bf72251a8a0185092c00240e1f88ac')
     })
   })

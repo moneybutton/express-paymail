@@ -1,16 +1,16 @@
-import { Address, PublicKey, Script } from 'bsv'
+import { Address, PubKey } from 'bsv'
 
 const p2pkhFromAddress = (addressString) => {
   const address = Address.fromString(addressString)
-  return Script.buildPublicKeyHashOut(address).toBuffer().toString('hex')
+  return address.toTxOutScript().toHex()
 }
 
-const p2pkhFromPublicKey = (pubkey) => {
-  const address = Address.fromPublicKey(PublicKey.fromString(pubkey))
+const p2pkhFromPubKey = (pubkey) => {
+  const address = Address.fromPubKey(PubKey.fromString(pubkey))
   return p2pkhFromAddress(address.toString())
 }
 
 export {
   p2pkhFromAddress,
-  p2pkhFromPublicKey
+  p2pkhFromPubKey
 }

@@ -11,7 +11,7 @@
     "dev": "nodemon -w package.json -w src/ -x yarn build"
   },
   "repository": "https://github.com/moneybutton/express-paymail",
-  "author": "Yours Inc.",
+  "author": "Fermatted Drives Limited",
   "license": "Open-BSV",
   "publishConfig": {
     "access": "public"

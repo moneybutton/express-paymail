@@ -69,7 +69,7 @@ const validateBaseUrl = (url) => {
 
 const buildPaymailRouter = (baseUrl, config) => {
   const baseRouter = express.Router()
-  baseRouter.use(bodyParser.json({ type: 'application/json' }))
+  baseRouter.use(bodyParser.json({ ...config.bodyParserConfig, type: 'application/json' }))
   const apiRouter = express.Router()
   baseUrl = validateBaseUrl(baseUrl)
 
@@ -135,6 +135,7 @@ const buildRouter = (baseDomain, config) => {
       useCors: true,
       corsConfig: {},
       errorHandler: errorHandler,
+      bodyParserConfig: {},
       ...config
     }
   )

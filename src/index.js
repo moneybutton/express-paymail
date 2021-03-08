@@ -6,6 +6,7 @@ import { buildGetPaymentDestinationRouter } from './buildGetPaymentDestinationRo
 import { buildIdentityRouter } from './buildIndentityRouter'
 import { buildVerifyPubkeyRouter } from './buildVerifyPubkeyRouter'
 import { buildPublicProfileRouter } from './buildPublicProfileRouter'
+import { buildAssetInformationRouter } from './buildAssetInformationRouter'
 import { buildP2pPaymentDestinationRouter } from './buildP2pPaymentDestinationRouter'
 import { errorHandler } from './error-handler'
 import { PaymailClient } from '@moneybutton/paymail-client'
@@ -111,6 +112,11 @@ const buildPaymailRouter = (baseUrl, config) => {
   buildP2pPaymentDestinationRouter(config, (router) => {
     apiRouter.use(router)
     capabilities[CapabilityCodes.p2pPaymentDestination] = joinUrls(baseUrl.href, getBaseRoute(config), '/p2p-payment-destination/{alias}@{domain.tld}')
+  })
+
+  buildAssetInformationRouter(config, (router) => {
+    apiRouter.use(router)
+    capabilities[CapabilityCodes.assetInformation] = joinUrls(baseUrl.href, getBaseRoute(config), '/asset/{alias}@{domain.tld}')
   })
 
   baseRouter.get('/.well-known/bsvalias', asyncHandler(async (req, res) => {

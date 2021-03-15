@@ -7,6 +7,7 @@ import { buildIdentityRouter } from './buildIndentityRouter'
 import { buildVerifyPubkeyRouter } from './buildVerifyPubkeyRouter'
 import { buildPublicProfileRouter } from './buildPublicProfileRouter'
 import { buildAssetInformationRouter } from './buildAssetInformationRouter'
+import { buildSfpRouter } from './buildSfpRouter'
 import { buildP2pPaymentDestinationRouter } from './buildP2pPaymentDestinationRouter'
 import { errorHandler } from './error-handler'
 import { PaymailClient } from '@moneybutton/paymail-client'
@@ -78,7 +79,7 @@ const buildPaymailRouter = (baseUrl, config) => {
     baseRouter.use(cors(config.corsConfig || {}))
   }
 
-  const capabilities = {}
+  const capabilities = config.capabilities || {}
 
   capabilities[CapabilityCodes.requestSenderValidation] = !!config.requestSenderValidation
 
@@ -117,6 +118,12 @@ const buildPaymailRouter = (baseUrl, config) => {
   buildAssetInformationRouter(config, (router) => {
     apiRouter.use(router)
     capabilities[CapabilityCodes.assetInformation] = joinUrls(baseUrl.href, getBaseRoute(config), '/asset/{alias}@{domain.tld}')
+  })
+
+  buildSfpRouter(config, (router) => {
+    apiRouter.use(router)
+    capabilities[CapabilityCodes.sfpBuildAction] = joinUrls(baseUrl.href, getBaseRoute(config), '/sfp/build')
+    capabilities[CapabilityCodes.sfpAuthoriseAction] = joinUrls(baseUrl.href, getBaseRoute(config), '/sfp/authorise')
   })
 
   baseRouter.get('/.well-known/bsvalias', asyncHandler(async (req, res) => {

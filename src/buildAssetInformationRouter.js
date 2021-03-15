@@ -10,9 +10,10 @@ const buildAssetInformationRouter = (config, ifPresent) => {
 
       res.json(assetInformation)
     }))
+    
+    ifPresent(router)
   }
 
-  ifPresent(router)
 }
 
 export { buildAssetInformationRouter }

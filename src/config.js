@@ -1,4 +1,4 @@
-import MoneyButtonConfigBuilder from '@moneybutton/config'
+import { MoneyButtonConfigBuilder } from '@moneybutton/config'
 
 const config = new MoneyButtonConfigBuilder()
   .build()

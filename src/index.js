@@ -78,7 +78,7 @@ const buildPaymailRouter = (baseUrl, config) => {
     baseRouter.use(cors(config.corsConfig || {}))
   }
 
-  const capabilities = {}
+  const capabilities = config.capabilities || {}
 
   capabilities[CapabilityCodes.requestSenderValidation] = !!config.requestSenderValidation
 

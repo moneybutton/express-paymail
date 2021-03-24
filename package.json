@@ -20,7 +20,7 @@
     "@moneybutton/config": "^0.38.5",
     "@moneybutton/paymail-client": "^0.38.4",
     "body-parser": "1.18.3",
-    "bsv": "2.0.4",
+    "bsv": "2.0.7",
     "cors": "2.8.5",
     "express": "4.17.1",
     "express-async-handler": "1.1.3",

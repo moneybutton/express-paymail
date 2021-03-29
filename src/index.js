@@ -8,6 +8,7 @@ import { buildVerifyPubkeyRouter } from './buildVerifyPubkeyRouter'
 import { buildPublicProfileRouter } from './buildPublicProfileRouter'
 import { buildAssetInformationRouter } from './buildAssetInformationRouter'
 import { buildP2pPaymentDestinationRouter } from './buildP2pPaymentDestinationRouter'
+import { buildP2pPaymentDestinationTokenRouter } from './buildP2pPaymentDestinationTokensRouter'
 import { errorHandler } from './error-handler'
 import { PaymailClient } from '@moneybutton/paymail-client'
 import dns from 'dns'
@@ -112,6 +113,11 @@ const buildPaymailRouter = (baseUrl, config) => {
   buildP2pPaymentDestinationRouter(config, (router) => {
     apiRouter.use(router)
     capabilities[CapabilityCodes.p2pPaymentDestination] = joinUrls(baseUrl.href, getBaseRoute(config), '/p2p-payment-destination/{alias}@{domain.tld}')
+  })
+
+  buildP2pPaymentDestinationTokenRouter(config, (router) => {
+    apiRouter.use(router)
+    capabilities[CapabilityCodes.p2pPaymentDestinationWithTokensSupport] = joinUrls(baseUrl.href, getBaseRoute(config), '/p2p-payment-destination-tokens-support/{alias}@{domain.tld}')
   })
 
   buildAssetInformationRouter(config, (router) => {

@@ -4,6 +4,7 @@ import { PaymailError } from './errors/PaymailError'
 import HttpStatus from 'http-status-codes'
 import * as helpers from './script-helpers'
 import { VerifiableMessage } from '@moneybutton/paymail-client'
+import { checkContentType } from './middlewares'
 
 const HANDLE_VALIDATION_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
 
@@ -39,13 +40,6 @@ const validateRequest = async (params, paymailClient, checkSignature) => {
 
     await validateSignature(paymailClient, params)
   }
-}
-
-const checkContentType = (req, res, next) => {
-  if (!req.is('application/json')) {
-    throw new PaymailError('Wrong content type. It should be `application/json`', HttpStatus.BAD_REQUEST, 'wrong-content-type')
-  }
-  next()
 }
 
 const buildGetPaymentDestinationRouter = (config, ifPresent) => {

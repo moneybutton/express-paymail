@@ -1,10 +1,10 @@
-import express from 'express'
-import asyncHandler from 'express-async-handler'
-import { PaymailError } from './errors/PaymailError'
-import HttpStatus from 'http-status-codes'
-import * as helpers from './script-helpers'
-import { VerifiableMessage } from '@moneybutton/paymail-client'
-import { checkContentType } from './middlewares'
+const express = require('express')
+const asyncHandler = require('express-async-handler')
+const { PaymailError } = require('./errors/PaymailError')
+const HttpStatus = require('http-status-codes')
+const helpers = require('./script-helpers')
+const { VerifiableMessage } = require('@moneybutton/paymail-client')
+const { checkContentType } = require('./middlewares')
 
 const HANDLE_VALIDATION_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
 
@@ -64,4 +64,4 @@ const buildGetPaymentDestinationRouter = (config, ifPresent) => {
   }
 }
 
-export { buildGetPaymentDestinationRouter }
+module.exports = { buildGetPaymentDestinationRouter }

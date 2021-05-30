@@ -1,4 +1,4 @@
-import { Address, PubKey } from 'bsv'
+const { Address, PubKey } = require('bsv')
 
 const p2pkhFromAddress = (addressString) => {
   const address = Address.fromString(addressString)
@@ -10,7 +10,7 @@ const p2pkhFromPubKey = (pubkey) => {
   return p2pkhFromAddress(address.toString())
 }
 
-export {
+module.exports = {
   p2pkhFromAddress,
   p2pkhFromPubKey
 }

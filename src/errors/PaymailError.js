@@ -7,4 +7,4 @@ class PaymailError extends Error {
   }
 }
 
-export { PaymailError }
+module.exports = { PaymailError }

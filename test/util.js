@@ -1,6 +1,6 @@
 /**
  *
  */
-export function buildApps () {
+module.exports = function buildApps () {
   return null
 }

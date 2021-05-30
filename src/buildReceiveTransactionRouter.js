@@ -1,7 +1,7 @@
-import express from 'express'
-import asyncHandler from 'express-async-handler'
-import { PaymailError } from './errors/PaymailError'
-import HttpStatus from 'http-status-codes'
+const express = require('express')
+const asyncHandler = require('express-async-handler')
+const { PaymailError } = require('./errors/PaymailError')
+const HttpStatus = require('http-status-codes')
 
 const buildReceiveTransactionRouter = (config, ifPresent) => {
   if (config.receiveTransaction) {
@@ -34,4 +34,4 @@ const buildReceiveTransactionRouter = (config, ifPresent) => {
   }
 }
 
-export { buildReceiveTransactionRouter }
+module.exports = { buildReceiveTransactionRouter }

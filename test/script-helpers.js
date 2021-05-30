@@ -1,6 +1,6 @@
 /* global def, get */
-import * as helpers from '../src/script-helpers'
-import { expect } from 'chai'
+const helpers = require('../src/script-helpers')
+const { expect } = require('chai')
 
 describe('script helpers', () => {
   describe('p2pkhFromAddress', () => {

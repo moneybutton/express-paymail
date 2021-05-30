@@ -1,5 +1,5 @@
-import express from 'express'
-import asyncHandler from 'express-async-handler'
+const express = require('express')
+const asyncHandler = require('express-async-handler')
 
 const buildAssetInformationRouter = (config, ifPresent) => {
   const router = express.Router()
@@ -15,4 +15,4 @@ const buildAssetInformationRouter = (config, ifPresent) => {
   }
 }
 
-export { buildAssetInformationRouter }
+module.exports = { buildAssetInformationRouter }

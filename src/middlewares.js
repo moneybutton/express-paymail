@@ -1,5 +1,5 @@
-import { PaymailError } from './errors/PaymailError'
-import HttpStatus from 'http-status-codes'
+const { PaymailError } = require('./errors/PaymailError')
+const HttpStatus = require('http-status-codes')
 
 const checkContentType = (req, _res, next) => {
   if (!req.is('application/json')) {

@@ -1,11 +1,11 @@
 /* global def, get */
-import { buildRouter } from '../src'
-import { expect } from 'chai'
-import express from 'express'
-import request from 'supertest'
-import HttpStatus from 'http-status-codes'
-import { MockPaymailClient } from './utils/MockPaymailClient'
-import moment from 'moment'
+const { buildRouter } = require('../src')
+const { expect } = require('chai')
+const express = require('express')
+const request = require('supertest')
+const HttpStatus = require('http-status-codes')
+const { MockPaymailClient } = require('./utils/MockPaymailClient')
+const moment = require('moment')
 
 describe('users', () => {
   let app = null

@@ -1,8 +1,8 @@
-import express from 'express'
-import asyncHandler from 'express-async-handler'
-import HttpStatus from 'http-status-codes'
-import { PaymailError } from './errors/PaymailError'
-import { checkContentType } from './middlewares'
+const express = require('express')
+const asyncHandler = require('express-async-handler')
+const HttpStatus = require('http-status-codes')
+const { PaymailError } = require('./errors/PaymailError')
+const { checkContentType } = require('./middlewares')
 
 const buildP2pPaymentDestinationRouter = (config, ifPresent) => {
   if (config.getP2pPaymentDestination) {
@@ -17,6 +17,7 @@ const buildP2pPaymentDestinationRouter = (config, ifPresent) => {
       }
 
       const response = await config.getP2pPaymentDestination(name, domain, satoshis)
+
       if (response === null) {
         throw new PaymailError(`Paymail not found: ${req.params.paymail}`, HttpStatus.NOT_FOUND, 'not-found')
       }
@@ -39,4 +40,4 @@ const buildP2pPaymentDestinationRouter = (config, ifPresent) => {
   }
 }
 
-export { buildP2pPaymentDestinationRouter }
+module.exports = { buildP2pPaymentDestinationRouter }

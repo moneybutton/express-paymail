@@ -22,4 +22,4 @@ class MockPaymailClient {
   }
 }
 
-export { MockPaymailClient }
+module.exports = { MockPaymailClient }

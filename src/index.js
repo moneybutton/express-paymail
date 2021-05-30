@@ -1,23 +1,23 @@
-import express from 'express'
-import asyncHandler from 'express-async-handler'
-import bodyParser from 'body-parser'
-import cors from 'cors'
-import { buildGetPaymentDestinationRouter } from './buildGetPaymentDestinationRouter'
-import { buildIdentityRouter } from './buildIndentityRouter'
-import { buildVerifyPubkeyRouter } from './buildVerifyPubkeyRouter'
-import { buildPublicProfileRouter } from './buildPublicProfileRouter'
-import { buildAssetInformationRouter } from './buildAssetInformationRouter'
-import { buildP2pPaymentDestinationRouter } from './buildP2pPaymentDestinationRouter'
-import { buildP2pPaymentDestinationTokenRouter } from './buildP2pPaymentDestinationTokensRouter'
-import { errorHandler } from './error-handler'
-import { PaymailClient } from '@moneybutton/paymail-client'
-import dns from 'dns'
-import fetch from 'isomorphic-fetch'
-import urljoin from 'url-join'
-import { URL } from 'url'
-import { CapabilityCodes } from './constants'
-import { buildReceiveTransactionRouter } from './buildReceiveTransactionRouter'
-import { PaymailError } from './errors/PaymailError'
+const express = require('express')
+const asyncHandler = require('express-async-handler')
+const bodyParser = require('body-parser')
+const cors = require('cors')
+const { buildGetPaymentDestinationRouter } = require('./buildGetPaymentDestinationRouter')
+const { buildIdentityRouter } = require('./buildIndentityRouter')
+const { buildVerifyPubkeyRouter } = require('./buildVerifyPubkeyRouter')
+const { buildPublicProfileRouter } = require('./buildPublicProfileRouter')
+const { buildAssetInformationRouter } = require('./buildAssetInformationRouter')
+const { buildP2pPaymentDestinationRouter } = require('./buildP2pPaymentDestinationRouter')
+const { buildP2pPaymentDestinationTokenRouter } = require('./buildP2pPaymentDestinationTokensRouter')
+const { errorHandler } = require('./error-handler')
+const { PaymailClient } = require('@moneybutton/paymail-client')
+const dns = require('dns')
+const fetch = require('isomorphic-fetch')
+const urljoin = require('url-join')
+const { URL } = require('url')
+const { CapabilityCodes } = require('./constants')
+const { buildReceiveTransactionRouter } = require('./buildReceiveTransactionRouter')
+const { PaymailError } = require('./errors/PaymailError')
 
 const getBaseRoute = (config) => {
   return config.basePath || '/'
@@ -153,4 +153,4 @@ const buildRouter = (baseDomain, config) => {
   )
 }
 
-export { buildRouter, PaymailError }
+module.exports = { buildRouter, PaymailError }

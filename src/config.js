@@ -1,6 +1,6 @@
-import { MoneyButtonConfigBuilder } from '@moneybutton/config'
+const { MoneyButtonConfigBuilder } = require('@moneybutton/config')
 
 const config = new MoneyButtonConfigBuilder()
   .build()
 
-export default config
+module.exports = config

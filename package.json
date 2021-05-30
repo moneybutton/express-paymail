@@ -2,13 +2,11 @@
   "name": "@moneybutton/express-paymail",
   "version": "0.38.6",
   "description": "Paymail Express implementation",
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "scripts": {
-    "build": "babel --copy-files src -d lib",
     "test": "mocha",
     "test:ci": "mocha",
-    "lint": "standard --parser=babel-eslint",
-    "dev": "nodemon -w package.json -w src/ -x yarn build"
+    "lint": "standard"
   },
   "repository": "https://github.com/moneybutton/express-paymail",
   "author": "Fermatted Drives Limited",
@@ -30,17 +28,9 @@
     "url-join": "4.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "7.5.5",
-    "@babel/core": "7.5.5",
-    "@babel/plugin-transform-runtime": "7.5.5",
-    "@babel/preset-env": "7.5.5",
-    "@babel/register": "7.5.5",
-    "@babel/runtime": "7.5.5",
-    "babel-eslint": "9.0.0",
     "bdd-lazy-var": "2.5.1",
     "component-emitter": "1.2.1",
     "mocha": "6.2.3",
-    "nodemon": "1.18.9",
     "sinon": "5.0.10",
     "standard": "12.0.1",
     "supertest": "3.1.0"

@@ -1,8 +1,8 @@
-import express from 'express'
-import asyncHandler from 'express-async-handler'
-import HttpStatus from 'http-status-codes'
-import { PaymailError } from './errors/PaymailError'
-import { checkContentType } from './middlewares'
+const express = require('express')
+const asyncHandler = require('express-async-handler')
+const HttpStatus = require('http-status-codes')
+const { PaymailError } = require('./errors/PaymailError')
+const { checkContentType } = require('./middlewares')
 
 const buildP2pPaymentDestinationTokenRouter = (config, ifPresent) => {
   if (config.getP2pPaymentDestinationWithTokensSupport) {
@@ -39,4 +39,4 @@ const buildP2pPaymentDestinationTokenRouter = (config, ifPresent) => {
   }
 }
 
-export { buildP2pPaymentDestinationTokenRouter }
+module.exports = { buildP2pPaymentDestinationTokenRouter }

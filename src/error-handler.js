@@ -1,5 +1,5 @@
-import { PaymailError } from './errors/PaymailError'
-import HttpStatus from 'http-status-codes'
+const { PaymailError } = require('./errors/PaymailError')
+const HttpStatus = require('http-status-codes')
 
 const errorHandler = (err, req, res, next) => {
   if (err instanceof PaymailError) {
@@ -17,4 +17,4 @@ const errorHandler = (err, req, res, next) => {
   }
 }
 
-export { errorHandler }
+module.exports = { errorHandler }

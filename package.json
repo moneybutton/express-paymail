@@ -27,6 +27,8 @@
     "url-join": "4.0.0"
   },
   "devDependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "@babel/register": "^7.18.9",
     "bdd-lazy-var": "2.5.1",
     "component-emitter": "1.2.1",
     "mocha": "6.2.3",

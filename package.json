@@ -11,9 +11,6 @@
   "repository": "https://github.com/moneybutton/express-paymail",
   "author": "Fermatted Drives Limited",
   "license": "Open-BSV",
-  "publishConfig": {
-    "access": "public"
-  },
   "dependencies": {
     "@moneybutton/paymail-client": "^0.39.0",
     "body-parser": "1.18.3",
@@ -44,10 +41,6 @@
       "it",
       "def",
       "subject"
-    ],
-    "ignore": [
-      "public/moneybutton.js"
     ]
-  },
-  "gitHead": "3ac0d2f8bdcd9bbb7b9934b30e92380c6600c95a"
+  }
 }

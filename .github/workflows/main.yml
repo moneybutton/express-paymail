@@ -31,16 +31,6 @@ jobs:
       - name: Run tests
         run: yarn test
 
-      - name: Build
-        run: yarn build
-
-      - name: Upload build
-        if: ${{ github.ref == 'refs/heads/main' }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: release
-          path: dist
-
   release:
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
@@ -70,12 +60,6 @@ jobs:
           git config user.email ${{ github.event.pusher.email }}
           git tag -a $TAG -m "Release $TAG"
           git push origin $TAG
-
-      - name: Download build
-        uses: actions/download-artifact@v3
-        with:
-          name: release
-          path: dist
 
       - name: Setup Node
         uses: actions/setup-node@v3

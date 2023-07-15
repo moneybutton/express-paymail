@@ -1,4 +1,4 @@
-# @moneybutton/express-paymail
+# @timechainlabs/express-payauth
 
 ## Description
 
@@ -54,22 +54,23 @@ endpoint | description
 `/api/bsvalias/id/{alias}@{domain.tld}` | Returns public key for a given paymail.
 `/api/bsvalias/address/{alias}@{domain.tld}` | Returns an output to send money to a given paymail owner.
 `/verifypubkey/{alias}@{domain.tld}/{pubkey}` | Checks if a given pubkey belongs to given paymail.
-`/api/bsvalias/oauth/{user}@{domain.tld}` | Another paymail requests user paymail for authorization to user's paymail capabilities
-`/api/bsvalias/oauth/response/{app}@{domain.tld}` | Another paymail is sending authorization JWT token to a particular app paymail
-`/api/bsvalias/payauth/userinfo/{user}@{domain.tld}` | Another paymail is requesting user paymail for protected data using JWT
+`/api/bsvalias/oauth/{user}@{domain.tld}` | app paymail requests user paymail for authorization to user's paymail capabilities
+`/api/bsvalias/oauth/response/{app}@{domain.tld}` | user paymail is sending authorization JWT token to a particular app paymail
+`/api/bsvalias/payauth/userinfo/{user}@{domain.tld}` | app paymail is requesting user paymail for protected userinfo data using JWT
 
 1.
-/api/bsvalias/payauth/{alias}@{appdomain.tld}
+/api/bsvalias/oauth/{user}@{domain.tld}
 INPUT BODY:
 {
     "appName": "app name",
     "appHandle": "<app>@<appdomain.tld>",
     "dt": "<ISO-8601 timestamp>",
-    "permissions": "list of comma seperated permissions",
-    "purpose": "purpose for asking for permissions",
+    "permissions": "list of comma seperated capabilities it wants access to",
+    "purpose": "purpose for asking for capabilities",
     "signature": "<compact Bitcoin message signature>"
 }
------ Paymail server pops up in user client to Get confirmation -------
+
+----- Paymail server triggers pop up in user agent to Get confirmation -------
 ---IF user agrees-----
 ASYNC (Because User might take time to confirm or deny)
 Response body:
@@ -78,7 +79,7 @@ Response body:
 }
 
 If request is timing out, respond with HTTP Status 202
-, call /oauth/token to send the JWT to app paymail
+, call /oauth/response to send the JWT to app paymail
 
 {
   "token": "...",
@@ -93,11 +94,40 @@ INPUT BODY:
   "access-token": "ESDSA JWT Token"
 }
 
-JWT Token breakdown:
-payload: { "userpaymail" : 
+ECDSA JWT Token breakdown:
+HEADER
+{
+  "alg": "ES256",
+  "typ": "JWT"
+}
+payload: { 
+"userpaymail" : user@domain.tld, 
+
+"capabilities" : "string seperated list of capabilities identified by the part after /api/bsvalias/payauth/"
+
+iss (issuer): user paymail server at domain.tld
+
+sub (subject): paymail of the user (alias@domain.tld) (the user)
+
+aud (audience): app paymail of app (app@domain.tld)
+
+exp (expiration time): UNIX time
+
+nbf (not before time): current UNIX time
+
+iat (issued at time): current UNIX time
+
+jti (JWT ID): UUID Of JWT
+
+}
+ECDSA Signature
 
 3. /api/bsvalias/payauth/userinfo/{user}@{domain.tld}
-INPUT HEADER:
+HEADER:
 {
-  authorization: "ESDSA JWT Token"
+  x-payauth: "ESDSA JWT Token"
+}
+RESPONSE:
+{
+  userinfo: {}
 }

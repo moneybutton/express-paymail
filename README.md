@@ -54,5 +54,39 @@ endpoint | description
 `/api/bsvalias/id/{alias}@{domain.tld}` | Returns public key for a given paymail.
 `/api/bsvalias/address/{alias}@{domain.tld}` | Returns an output to send money to a given paymail owner.
 `/verifypubkey/{alias}@{domain.tld}/{pubkey}` | Checks if a given pubkey belongs to given paymail.
+`/api/bsvalias/oauth/{user}@{domain.tld}` | Another paymail requests user paymail for authorization to user's paymail capabilities
+`/api/bsvalias/oauth/token/{app}@{domain.tld}` | Another paymail is sending authorization JWT token to a particular app paymail
+`/api/bsvalias/payauth/userinfo/{user}@{domain.tld}` | Another paymail is requesting user paymail for protected data using JWT
 
+1.
+/api/bsvalias/payauth/{alias}@{appdomain.tld}
+INPUT BODY:
+{
+    "appName": "app name",
+    "appHandle": "<app>@<appdomain.tld>",
+    "dt": "<ISO-8601 timestamp>",
+    "permissions": "list of comma seperated permissions",
+    "purpose": "purpose for asking for permissions",
+    "signature": "<compact Bitcoin message signature>"
+}
+----- Paymail server pops up in user client to Get confirmation -------
+---IF user agrees-----
+ASYNC (Because User might take time to confirm or deny)
+Response body:
+{
+    "access-token": "ESDSA JWT Token"
+}
+If request has timed out, call /oauth/token to send the JWT to app paymail
+
+
+2. /api/bsvalias/oauth/token/{app}@{domain.tld}
+INPUT BODY:
+{
+    "access-token": "ESDSA JWT Token"
+}
+
+JWT Token breakdown:
+payload: { "userpaymail" : 
+
+3. /api/bsvalias/payauth/userinfo
 

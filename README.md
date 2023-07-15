@@ -55,7 +55,7 @@ endpoint | description
 `/api/bsvalias/address/{alias}@{domain.tld}` | Returns an output to send money to a given paymail owner.
 `/verifypubkey/{alias}@{domain.tld}/{pubkey}` | Checks if a given pubkey belongs to given paymail.
 `/api/bsvalias/oauth/{user}@{domain.tld}` | Another paymail requests user paymail for authorization to user's paymail capabilities
-`/api/bsvalias/oauth/token/{app}@{domain.tld}` | Another paymail is sending authorization JWT token to a particular app paymail
+`/api/bsvalias/oauth/response/{app}@{domain.tld}` | Another paymail is sending authorization JWT token to a particular app paymail
 `/api/bsvalias/payauth/userinfo/{user}@{domain.tld}` | Another paymail is requesting user paymail for protected data using JWT
 
 1.
@@ -76,17 +76,28 @@ Response body:
 {
     "access-token": "ESDSA JWT Token"
 }
-If request has timed out, call /oauth/token to send the JWT to app paymail
+
+If request is timing out, respond with HTTP Status 202
+, call /oauth/token to send the JWT to app paymail
+
+{
+  "token": "...",
+  "signature": "..."
+}
 
 
-2. /api/bsvalias/oauth/token/{app}@{domain.tld}
+3. /api/bsvalias/oauth/response/{app}@{domain.tld}/
 INPUT BODY:
 {
-    "access-token": "ESDSA JWT Token"
+  "token": "...",
+  "access-token": "ESDSA JWT Token"
 }
 
 JWT Token breakdown:
 payload: { "userpaymail" : 
 
-3. /api/bsvalias/payauth/userinfo
-
+3. /api/bsvalias/payauth/userinfo/{user}@{domain.tld}
+INPUT HEADER:
+{
+  authorization: "ESDSA JWT Token"
+}

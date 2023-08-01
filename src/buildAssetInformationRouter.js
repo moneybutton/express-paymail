@@ -7,7 +7,6 @@ const buildAssetInformationRouter = (config, ifPresent) => {
   if (config.assetInformation) {
     router.get('/asset/:paymail', asyncHandler(async (req, res) => {
       const assetInformation = await config.assetInformation(...req.params.paymail.split('@'))
-
       res.json(assetInformation)
     }))
 

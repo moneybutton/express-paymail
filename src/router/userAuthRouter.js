@@ -6,9 +6,11 @@
 
 const express = require("express");
 const router = express.Router();
-const userAuthController = require("../controller/userAuthController.js");
+const {userAuthController , userInfo, appAuthController}= require("../controller/userAuthController.js");
 const { generateKeyPair, sign } = require("../helper/helper.js");
 router.post("/oauth/:paymailAddress", userAuthController);
+router.post("/oauth/app/:paymailAddress", appAuthController);
+router.post("/oauth/userinfo/:paymailAddress", userInfo);
 
 router.post("/signup", async (req, res) => {
   try {

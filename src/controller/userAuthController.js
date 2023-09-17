@@ -1,97 +1,132 @@
 // const jwt = require("jsonwebtoken");
 
-const JWT = require('jsonwebtoken');
-const Fs = require('fs');
+const JWT = require("jsonwebtoken");
+const Fs = require("fs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-
-async function  userAuthController(req, res){
+const axios = require("axios");
+const secretKeyJwt = "your_secret_key_here";
+const verifyToken = (token, secretKey) => {
   try {
+    const decoded = jwt.verify(token, secretKey);
+    return decoded;
+  } catch (error) {
+    console.error("Token verification error:", error.message);
+    return null;
+  }
+};
+
+async function userAuthController(req, res) {
+  try {
+    const obj = jwt.verify;
     const { appName, appHandle, permissions, purpose, signature } = req.body;
-    if(!appHandle ) return res.send("plase provide Apphandle");
-    if(!appName ) return res.send("plase provide appName");
-    if(!permissions ) return res.send("plase provide persmissions");
-    if(!purpose ) return res.send("plase provide purpose");
-    if(!signature ) return res.send("plase provide signature");
-    const paymailAddress = req.params.paymailAddress;
-    console.log(paymailAddress);
-    const secretKey = `aijdbeifefdfknd`;
+    console.log("req.body object");
+    console.log(req.body);
+    if (!appHandle) return res.send("Please provide appHandle"); // app paymail
+    if (!appName) return res.send("Please provide appName");
+    if (!permissions) return res.send("Please provide permissions");
+    if (!purpose) return res.send("Please provide purpose");
+    if (!signature) return res.send("Please provide signature");
+
+    const decodedToken = verifyToken(signature, secretKeyJwt);
+    let appConfigFromToken;
+    if (decodedToken) {
+      console.log("Decoded Token:", decodedToken);
+      appConfigFromToken = decodedToken; // or decodedToken.appConfig
+      console.log("Extracted appConfig:", appConfigFromToken);
+    } else {
+      console.log("Token verification failed.");
+    }
+    if(appConfigFromToken.appHandle!==appHandle)
+    res.send("in valid app trying to access token");
+    // const paymailAddress = req.params.paymailAddress; // userpaymail
+    // console.log(paymailAddress);
+    const secretKey =
+      "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgoJnHyLoRPhTJBhdB\nvIA3CXiRK/SRP+QidMAmz5s6gLOhRANCAATUrvM9cOf5cIG3u3rJlWqangfIjdv/\nnzd8d+VlI9flVcuAIhJ+PD2g3kFa0NCWqUxFjwOXJlePQwcxm8PBKcmb\n-----END PRIVATE KEY-----\n";
+
     const payload = {
-      paymailAddress,
+      //apphandle
+      appHandle,
       permissions,
     };
 
     const expiresIn = "1h";
 
-    const encodedToken = JWT.sign(payload, "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgnjx5D7Oaz+PJ1cuf\nnn7zXsKein+CSEFT2tC80ZBoW7qhRANCAAS2/q35PcgCuYShcuBMfF3W9gxoHxik\nxlg7HIcUTRO324Zisk2PNcX8uaK32Ho9aMNM8VZWpHWM5Eg259br2f2+\n-----END PRIVATE KEY-----\n", { algorithm: 'ES256' , expiresIn});
-    // jwt.verify(token,secretKey);
+    const encodedToken = jwt.sign(payload, secretKey, { algorithm: "ES256", expiresIn });
+
     res.send({ encodedToken });
   } catch (error) {
-    res.status(500).send({ error: error.message });
+    console.log(error);
+    res.status(500).send(error.message);
   }
+}
+
+async function userInfo(req, res) {
+  try {
+    const { headerToken } = req.headers;
+    const userPaymail = req.params;
+    console.log(userPaymail);
+    // if(headerToekn===appToken) // this will work only after connecting a db with express auth.(appToken is the token stored in our db against every app)
+    if (!headerToken) {
+      return res.send("Request Denied due invalid credientials.");
+    }
+    // then we will search for user in express-payauth and check if the user exist then return the details other wise will ask them to register.
+    res.json({
+      name: "Name of user",
+      capabilities: [
+        "user public key",
+        ["user transaction1", "user transaction2", "user transaction3", "user transaction4"],
+      ],
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+let appConfig = {
+  appName: "Test Name",
+  appHandle: "test Handle",
+  permissions: [1, 2, 3],
+  purpose: "sdfnj",
 };
 
-module.exports = userAuthController;
-
-
-// async function userAuthController(req, res) {
-//   try {
-//     const { appName, appHandle, permissions, purpose, signature } = req.body;
-//     if (!appHandle) return res.send("Please provide appHandle");
-//     if (!appName) return res.send("Please provide appName");
-//     if (!permissions) return res.send("Please provide permissions");
-//     if (!purpose) return res.send("Please provide purpose");
-//     if (!signature) return res.send("Please provide signature");
-
-//     const secretKey = "your_secret_key_here"; // Replace with your actual secret key
-//     const payload = {
-//       appHandle,
-//       appName,
-//     };
-
-//     const expiresIn = "1h";
-//     const jwtToken = jwt.sign(payload, secretKey, { expiresIn });
-
-//     // Generate ECDSA token using crypto module
-//     const sign = crypto.createSign("sha256");
-//     sign.update(jwtToken);
-//     const ecdsaToken = sign.sign(secretKey, "base64");
-
-//     res.send({ jwtToken, ecdsaToken });
-//   } catch (error) {
-//     res.status(500).send({ error: error.message });
-//   }
-// }
-
-
-
-
-//  userAuthController = (request, response) => {
-//   // Read the private key
-//   return Fs.readFile('./keys/private.key', 'utf8', (err, privateKey) => {
-//     if (err) throw err;
-
-//     // Read the public key
-//     Fs.readFile('./keys/public.key', 'utf8', (err, publicKey) => {
-//       if (err) throw err;
-
-//       const payload = {
-//         name: 'Tina',
-//         email: 'info@tinaciousdesign.com'
-//       };
-
-//       // Sign the payload
-//       const encodedToken = JWT.sign(payload, privateKey, { algorithm: 'ES256' });
-
-//       return response.json({
-//         public_key: publicKey,
-//         encoded: encodedToken,
-//       });
-//     });
-//   });
+// const generateSign = (obj) => {
+//   const secretKey = "public_key";
+//   const dataToSign = JSON.stringify(obj); // Convert obj to a string
+//   const signature = crypto.createHmac("sha256", secretKey).update(dataToSign).digest("hex");
+//   console.log("Signature:", signature);
+//   return signature;
 // };
 
+const generateSign = (obj, secretKeyJwt) => {
+  const token = jwt.sign(obj, secretKeyJwt);
+  console.log("JWT Token:", token);
+  return token;
+};
 
-// module.exports = userAuthController;
 
-module.exports = userAuthController;
+
+async function appAuthController(req, res) {
+  try {
+    const paymailAddress = req.params.paymailAddress;
+    if (!paymailAddress) return res.send("plase provide userPaymail");
+    const apiUrl = `http://localhost:8080/api/bsvalias/oauth/${paymailAddress}`;
+    console.log(appConfig);
+    const jwtToken = generateSign(appConfig,secretKeyJwt);
+    appConfig = { ...appConfig, signature: jwtToken };
+    console.log(appConfig);
+    const response = await axios.post(apiUrl, appConfig);
+    const ecdsaTokenFromResponse = response.data.encodedToken;
+    res.send({ ecdsaToken: ecdsaTokenFromResponse });
+  } catch (error) {
+    console.error("API Error:", error.response?.data || error.message);
+    res.status(error.response?.status || 500).send({ error: "An error occurred while processing the request." });
+  }
+}
+
+
+
+
+
+
+module.exports = { userAuthController, appAuthController, userInfo };
